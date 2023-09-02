@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Vanshika Mittal"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -39,15 +39,15 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: I took a statistics class in undergrad, where I was introducted to R but did not use it in depth. We worked on STATA for data analytics and linear regression. Other than this, I do not have any experience with Git. 
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I have studied econometrics which makes me confortbale with the theory behind linear regressions. I would not say that I feel confident about any of the R components in the course. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: No, the course breakdown is very clear and I am looking forward to learning each component.
 
 
 ## 3) GitHub
