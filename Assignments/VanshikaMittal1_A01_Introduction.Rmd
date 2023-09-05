@@ -39,7 +39,7 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: I took a statistics class in undergrad, where I was introducted to R but did not use it in depth. We worked on STATA for data analytics and linear regression. Other than this, I do not have any experience with Git. 
+> Answer: I took a statistics class in undergrad, where I was introducted to R but did not use it in depth. I worked on STATA for data analytics and linear regression. Other than this, I do not have any experience with Git. 
 
 2. Are there any components of the course about which you feel confident?
 
@@ -54,7 +54,7 @@ Enter answers to the questions just below the >Answer: prompt.
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
+> Answer: https://github.com/vanshika-m/EDE_Fall2023/tree/main
 
 ## 4) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
