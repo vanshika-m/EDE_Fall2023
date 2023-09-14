@@ -56,13 +56,23 @@ mean.seq1 > median.seq1
 
 5.  Create a series of vectors, each with four components, consisting of (a) names of students, (b) test scores out of a total 100 points, and (c) whether or not they have passed the test (TRUE or FALSE) with a passing grade of 50.
 ```{r}
-
+student_name <- c("A", "B", "C", "D")
+student_score <- c(88, 45, 67, 93)
+passing_score <- c(TRUE, FALSE, TRUE, FALSE)
 ```
 
-
 6.  Label each vector with a comment on what type of vector it is.
+student_name: character vector
+student_score: numeric vector 
+passing_score: logical vector 
 
 7.  Combine each of the vectors into a data frame. Assign the data frame an informative name.
+```{r}
+report_card <- c(student_name, student_score, passing_score) #combining the above vectors 
+is.data.frame(report_card) #checking whether this is a data frame, output = false 
+report_card_df <- as.data.frame(report_card) #converting the vector into a data frame
+is.data.frame(report_card_df) #confirming whether its been converted 
+```
 
 8.  Label the columns of your data frame with informative titles.
 
