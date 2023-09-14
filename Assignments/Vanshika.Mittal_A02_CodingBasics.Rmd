@@ -44,14 +44,10 @@ mean.seq1 > median.seq1 #determining whether mean is greater than median
 
 
 4.  Insert comments in your code to describe what you are doing.
-see codes above
+
 
 ```{r basics 1}
-#1. 
-
-#2. 
-
-#3. 
+#Comments have been inserted in codes above. 
 ```
 
 ## Basics, Part 2
@@ -70,9 +66,6 @@ class(student_name)
 class(student_score)
 class(passing_score)
 ```
-student_name: character vector 
-student_score: numeric vector 
-passing_score: logical vector 
 
 7.  Combine each of the vectors into a data frame. Assign the data frame an informative name.
 ```{r}
@@ -85,7 +78,7 @@ is.data.frame(report_card_df) #confirming whether its been converted
 8.  Label the columns of your data frame with informative titles.
 
 ```{r basics 2}
-colnames(report_card_df) <- c("Name", "Score", "Passing Grade") #renaming column names 
+colnames(report_card_df) <- c("Name", "Score", "Passing Grade") #renaming columns
 report_card_df #viewing our df to confirm
 ```
 
