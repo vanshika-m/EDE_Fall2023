@@ -40,8 +40,8 @@ library(tidyverse)
 library(lubridate)
 
 Neonics <- read.csv("./ECOTOX_Neonicotinoids_Insects_raw.csv", file = "~/EDE_Fall2023/Data/Raw",
-                    stringsAsFactors = TRUE)
-
+                    stringsAsFactors = TRUE, header = TRUE)
+Litter <- read.csv("NEON_NIWO_Litter_massdata_2018-08_raw.csv", file = "~/EDE_Fall2023/Data/Raw/NIWO_Litter", stringsAsFactors = TRUE, header = TRUE)
 ```
 
 ## Learn about your system
@@ -66,13 +66,13 @@ Neonics <- read.csv("./ECOTOX_Neonicotinoids_Insects_raw.csv", file = "~/EDE_Fal
 5.  What are the dimensions of the dataset?
 
 ```{r}
-
+dim(Neonics)
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
-
+summary(Neonics$Effects)
 ```
 
 > Answer:
