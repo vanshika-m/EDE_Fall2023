@@ -31,16 +31,26 @@ The completed exercise is due on Thursday, Sept 28th @ 5:00pm.
 2. Apply the `glimpse()` function to reveal the dimensions, column names, and structure of each dataset. 
 
 ```{r setup, message = FALSE}
-#1a 
+#1a loading necessary packages 
+library(tidyverse)
+library(lubridate)
+library(here)
 
 #1b 
+getwd() #working directory is set 
 
-#1c 
+#1c reading the four EPA air datasets into R 
+PM2.5_2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE, header = TRUE)
+PM2.5_2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE, header = TRUE)
+O3_2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE, header = TRUE)
+O3_2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE, header = TRUE)
 
 #2 
-
+glimpse(PM2.5_2019)
+glimpse(PM2.5_2018)
+glimpse(O3_2019)
+glimpse(O3_2018)
 ```
-
 
 ## Wrangle individual datasets to create processed files.
 
@@ -53,11 +63,24 @@ The completed exercise is due on Thursday, Sept 28th @ 5:00pm.
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
 ```{r}
-#3
+#3 converting date column into date object
+PM2.5_2019$Date <- mdy(PM2.5_2019$Date)
+PM2.5_2018$Date <- mdy(PM2.5_2018$Date)
+O3_2019$Date <- mdy(O3_2019$Date)
+O3_2018$Date <- mdy(O3_2018$Date)
 
-#4
+#4 selecting certain columns and creating new datasets 
+new_PM2.5_2019 <- select(PM2.5_2019, 
+                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+new_PM2.5_2018 <- select(PM2.5_2018, 
+                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+new_O3_2019 <- select(O3_2019, 
+                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+new_O3_2018 <- select(O3_2018, 
+                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
 
 #5
+
 
 #6
 
