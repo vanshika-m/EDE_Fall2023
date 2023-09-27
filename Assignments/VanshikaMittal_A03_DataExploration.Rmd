@@ -44,7 +44,8 @@ library(lubridate)
 #uploading datasets
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",
                     stringsAsFactors = TRUE, header = TRUE)
-Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE, header = TRUE)
+Litter <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", 
+                   stringsAsFactors = TRUE, header = TRUE)
 ```
 
 ## Learn about your system
@@ -78,15 +79,16 @@ dim(Neonics)
 summary(Neonics$Effect)
 ```
 
-> Answer: Population
+> Answer: Population is the most studied effect. This could be the case due to rapidly decreasing and several insect species going extinct in recent times.
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.[TIP: The `sort()` command can sort the output of the summary command...]
 
 ```{r, summarising common names data}
-summary(Neonics$Species.Common.Name, decreasing = FALSE) #summarising and sorting in descending order to find the most commonly studied species 
+#summarising and sorting in descending order to find the most commonly studied species 
+summary(Neonics$Species.Common.Name, decreasing = FALSE) 
 ```
 
-> Answer: Honey Bee, Parasitic Wasp, Buff Tailed Bumblebee, Carniolan Honey Bee, Bumble Bee and Italian Honeybee
+> Answer: The most commonly studied insects are Honey Bee, Parasitic Wasp, Buff Tailed Bumblebee, Carniolan Honey Bee, Bumble Bee and Italian Honeybee. They all belong to the family of bees and are known to be the most efficient pollinators. Bees are also endangered and are heavily impacted by insectiscides. 
 
 8.  Concentrations are always a numeric value. What is the class of `Conc.1..Author.` column in the dataset, and why is it not numeric?
 
@@ -94,7 +96,7 @@ summary(Neonics$Species.Common.Name, decreasing = FALSE) #summarising and sortin
 class(Neonics$Conc.1..Author.) #checking the class of a column 
 ```
 
-> Answer: There are certain cells in this column which contain the vlaue "NR" which could be the possibel reason behind R reading it as a string value. While loading the data into our script, we changed as string values to be read as factors
+> Answer: There are certain cells in this column which contain the vlaue "NR" which could be the possible reason behind R reading it as a string value. While loading the data into our script, we changed as string values to be read as factors
 
 ## Explore your data graphically (Neonics)
 
@@ -109,7 +111,7 @@ Neonics_Studies_Frq1 # calling the frequency polygraph
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
-```{r, Frequency Polygraphs}
+```{r, Frequency Polygraphs divided by colour}
 #graphing the frequency of publications by year and sorting them in different colours for different test locations 
 Neonics_Studies_Frq2 <- ggplot(Neonics) +
 geom_freqpoly(aes(x=Publication.Year, color = Test.Location))  
@@ -124,7 +126,7 @@ Interpret this graph. What are the most common test locations, and do they diffe
 
 [**TIP**: Add `theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))` to the end of your plot command to rotate and align the X-axis labels...]
 
-```{r, Bar Graphs}
+```{r, Neonics Bar Graphs}
 #making a bar graph 
 Neonics_Endpoint_Bar <- ggplot(Neonics, aes (x=Endpoint, after_stat(count))) + 
   geom_bar(aes(x=Endpoint, after_stat(count)), width = 1)+
@@ -159,7 +161,7 @@ summary(Litter$siteID)
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
-```{r, Bar Graph}
+```{r, Litter Bar Graph}
 #plotting a bar graph for the type of litter collected 
 Litter_functional_Bar <- ggplot(Litter)+
   geom_bar(aes(x=functionalGroup, after_stat(count)))
