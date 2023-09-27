@@ -79,10 +79,20 @@ new_O3_2019 <- select(O3_2019,
 new_O3_2018 <- select(O3_2018, 
                       Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
 
-#5
-
+#5 replacing column values 
+new_PM2.5_2019 <- mutate(new_PM2.5_2019, AQS_PARAMETER_DESC = "PM 2.5" )
+new_PM2.5_2018 <- mutate(new_PM2.5_2018, AQS_PARAMETER_DESC = "PM 2.5" )
 
 #6
+#row.names = FALSE (purpose)
+write.csv(new_PM2.5_2019, file =
+            "./Data/Processed/EPAair_PM25_NC2019_processed.csv") 
+write.csv(new_PM2.5_2018, file = 
+            "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(new_O3_2019, file = 
+            "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(new_O3_2018, file = 
+            "./Data/Processed/EPAair_O3_NC2018_processed.csv")
 
 ```
 
