@@ -80,11 +80,10 @@ new_O3_2018 <- select(O3_2018,
                       Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
 
 #5 replacing column values 
-new_PM2.5_2019 <- mutate(new_PM2.5_2019, AQS_PARAMETER_DESC = "PM 2.5" )
-new_PM2.5_2018 <- mutate(new_PM2.5_2018, AQS_PARAMETER_DESC = "PM 2.5" )
+new_PM2.5_2019 <- mutate(new_PM2.5_2019, AQS_PARAMETER_DESC = "PM25" )
+new_PM2.5_2018 <- mutate(new_PM2.5_2018, AQS_PARAMETER_DESC = "PM25" )
 
 #6
-#row.names = FALSE (purpose)
 write.csv(new_PM2.5_2019, file =
             "./Data/Processed/EPAair_PM25_NC2019_processed.csv") 
 write.csv(new_PM2.5_2018, file = 
@@ -121,7 +120,12 @@ write.csv(new_O3_2018, file =
 #7 combining the four datasets and storing it in a new variable 
 df_EPAair <- rbind(new_PM2.5_2019, new_PM2.5_2018, new_O3_2019, new_O3_2018)
 
-#8 A pipe function with features defined as per the prompt 
+#8 A pipe function 
+#filtering common sites 
+#grouping them by date, sitename, AQS parameter and county
+#summarizing the mean AQI value, latitude and longitude
+#creating new columns for month and year 
+#rearranging the datafrme for a cleaner read 
 new_df_EPAair <-
   df_EPAair %>%
   filter(Site.Name == "Linville Falls" |Site.Name == "Durham Armory" | Site.Name == "Leggett" |
@@ -137,13 +141,15 @@ new_df_EPAair <-
   mutate (year = year(Date)) %>%
   select (Date, month, year, Site.Name,AQS_PARAMETER_DESC, COUNTY, mean_AQI, mean_lat, mean_long)
 
-#9
+#9 spreading the dataset with Ozone and PM2.5 AQI values in different columns 
+new_df_EPAair <- pivot_wider(new_df_EPAair, names_from = AQS_PARAMETER_DESC , values_from = mean_AQI)
 
+#10 calling the dimensions
+dim(new_df_EPAair)
 
-#10
-
-#11
-
+#11 saving the processed data
+write.csv(new_df_EPAair, 
+           "./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 ```
 
 
@@ -154,15 +160,22 @@ new_df_EPAair <-
 13. Call up the dimensions of the summary dataset.
 
 ```{r}
+#12 A pipe function 
+#grouping by month, year and sitename 
+#summarising means of ozone and Pm 2.5 AQIs 
+#dropping mean ozone values which were NA 
+summary_df <- 
+  new_df_EPAair %>%
+  group_by (month, year, Site.Name) %>%
+  summarise(mean_ozone = mean(Ozone),
+            mean_PM2.5 = mean(PM25)) %>%
+  drop_na(mean_ozone)
 
-#12
-
-
-#13
-
+#13 checking the dimensions of the summary dataset 
+dim(summary_df)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: The na.omit function removes missing values for all columns. While we are only dropping missing values from the mean_ozone column and do not mind missing values in mean_PM2.5
