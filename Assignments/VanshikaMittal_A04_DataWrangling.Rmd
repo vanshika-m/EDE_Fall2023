@@ -118,11 +118,27 @@ write.csv(new_O3_2018, file =
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
 ```{r}
-#7 
+#7 combining the four datasets and storing it in a new variable 
+df_EPAair <- rbind(new_PM2.5_2019, new_PM2.5_2018, new_O3_2019, new_O3_2018)
 
-#8 
+#8 A pipe function with features defined as per the prompt 
+new_df_EPAair <-
+  df_EPAair %>%
+  filter(Site.Name == "Linville Falls" |Site.Name == "Durham Armory" | Site.Name == "Leggett" |
+          Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" |
+          Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." |
+          Site.Name == "Garinger High School" |  Site.Name == "Castle Hayne"|Site.Name == "Pitt Agri. Center" |
+          Site.Name == "Bryson City" |Site.Name == "Millbrook School") %>%
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarise(mean_AQI = mean(DAILY_AQI_VALUE),
+            mean_lat = mean(SITE_LATITUDE),
+            mean_long = mean(SITE_LONGITUDE)) %>%
+  mutate (month = month(Date)) %>%
+  mutate (year = year(Date)) %>%
+  select (Date, month, year, Site.Name,AQS_PARAMETER_DESC, COUNTY, mean_AQI, mean_lat, mean_long)
 
 #9
+
 
 #10
 
