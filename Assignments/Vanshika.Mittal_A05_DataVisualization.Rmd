@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Vanshika Mittal"
 date: "Fall 2023"
 output: pdf_document
 geometry: margin=2.54cm
