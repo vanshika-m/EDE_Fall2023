@@ -31,9 +31,18 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 2. Make sure R is reading dates as date format; if not change the format to date.
 
 ```{r initialize project}
-#1 
+#1 loading the libraries 
+library(tidyverse); library(lubridate); library(here); library(cowplot)
+getwd()
 
-#2 
+A05.NTL.PeterPaul <- read.csv("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv",
+                              stringsAsFactors = TRUE, header = TRUE)
+A05.Litter <- read.csv("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv", 
+                       stringsAsFactors = TRUE, header = TRUE)
+
+#2 formatting date variables in R 
+A05.NTL.PeterPaul$sampledate <- ymd(A05.NTL.PeterPaul$sampledate)
+A05.Litter$collectDate <- ymd(A05.Litter$collectDate)
 
 ```
 ## Define your theme
