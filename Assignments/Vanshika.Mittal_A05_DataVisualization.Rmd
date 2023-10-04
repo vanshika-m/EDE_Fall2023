@@ -59,10 +59,11 @@ A05.Litter$collectDate <- ymd(A05.Litter$collectDate)
 
 ```{r build plot theme}
 #3
-my_theme <- theme_minimal(base_size = 14) +
+my_theme <- theme_minimal() +
   theme(plot.background = element_rect('white'),
     legend.position = "top", 
-    plot.title = element_text(color = 'blue'))
+    plot.title = element_text(color = 'blue'),
+    legend.key = element_rect())
 
 theme_set(my_theme)
 ```
@@ -74,11 +75,12 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 
 ```{r plot total P vs PO4}
 #4 
-P.by.PO4 <- ggplot(A05.NTL.PeterPaul) +
-  geom_point(aes(x= tp_ug, y = po4, color = lakename)) +
-  geom_smooth(method = lm, color = 'black') + 
-  xlim(0, 25) +
-  ylim (0, 25)
+P.by.PO4 <- ggplot(A05.NTL.PeterPaul,aes(x= tp_ug, y = po4, color = lakename))+
+            geom_point() +
+            geom_smooth(method = lm, color = 'black') + 
+            labs(x = "Total Phosphorous", y = "Total Phosphate")+
+            xlim(0, 80) +
+            ylim (0, 25) 
 
 print(P.by.PO4) 
   
@@ -93,25 +95,36 @@ Tip:
 
 ```{r Create boxplots}
 #5 
-Temp_Boxplot <- ggplot(A05.NTL.PeterPaul, aes(x= month.abb[month], 
-                                        y = temperature_C, color = lakename)) +
+#converting month to a factor with 12 levels 
+A05.NTL.PeterPaul$month <- factor(A05.NTL.PeterPaul$month, levels = c(1:12),
+                                  labels = month.abb)
+                                  
+
+#making boxplots for each variable 
+Temp_Boxplot <- ggplot(A05.NTL.PeterPaul, aes(x= month, y = temperature_C, color = lakename)) +
                          geom_boxplot() +
-                         theme(legend.position = 'top',
-                               axis.title = element_text("Month", "Temperature"))
+                         theme(legend.position = 'top') + 
+                         labs(x = "Month" , y= "Temperature_C")
+                               
                           
-                  
-TP_Boxplot <- ggplot(A05.NTL.PeterPaul) +
-  geom_boxplot(aes( x= month.abb[month], y = tp_ug, color = lakename )) + 
-  theme(legend.position = 'none')
+TP_Boxplot <- ggplot(A05.NTL.PeterPaul, aes( x= month, y = tp_ug, color = lakename )) +
+  geom_boxplot() + 
+  theme(legend.position = 'none') + 
+  labs(x = "Month" , y= "Total Phosphorous")
 
-TN_Boxplot <- ggplot(A05.NTL.PeterPaul) +
-  geom_boxplot(aes( x= month.abb[month], y = tn_ug, color = lakename )) + 
-  theme(legend.position = "none")
+TN_Boxplot <- ggplot(A05.NTL.PeterPaul, aes( x= month, y = tn_ug, color = lakename )) +
+  geom_boxplot() + 
+  theme(legend.position = "none") +
+    labs(x = "Month" , y= "Total Phosphate")
 
-Combined_Boxplot <- plot_grid(Temp_Boxplot, TP_Boxplot,TN_Boxplot, nrow = 3, 
-                              align = "h") +
-  theme(plot.title = c("Temperature", "TP", "TN"))
+#combining the boxplots into one 
+Combined_Boxplot <- plot_grid(Temp_Boxplot, TP_Boxplot,TN_Boxplot, 
+                              nrow = 3, 
+                              align = "hv") +
+  labs(title = "Temperature, Total Phospohorous and Phosphate in Peter and Paul 
+       Lakes across months")
 
+print(Combined_Boxplot)
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
@@ -124,10 +137,21 @@ Question: What do you observe about the variables of interest over seasons and b
 
 ```{r Plot litter}
 #6
+Needles_plot <- ggplot(subset(A05.Litter, functionalGroup == "Needles")) + 
+  geom_point(aes(x= collectDate, y = dryMass, color = nlcdClass)) + 
+  labs(x= "Collection Date", y = "Dry Mass", 
+       title = "Dry Mass of Needles across different collection dates and types of lands")
 
+print(Needles_plot)
 
 #7
+Needles_faceted <- ggplot(subset(A05.Litter, functionalGroup == "Needles"), 
+                          aes(x= collectDate, y = dryMass)) +
+  geom_point() +
+  facet_wrap(vars(nlcdClass), nrow = 1) +
+  labs(x= "Collection Date", y = "Dry Mass")
 
+print(Needles_faceted)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
