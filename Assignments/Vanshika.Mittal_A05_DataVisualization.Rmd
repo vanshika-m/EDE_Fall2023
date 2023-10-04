@@ -61,7 +61,7 @@ A05.Litter$collectDate <- ymd(A05.Litter$collectDate)
 #3
 my_theme <- theme_minimal(base_size = 14) +
   theme(plot.background = element_rect('white'),
-    legend.position = "right", 
+    legend.position = "top", 
     plot.title = element_text(color = 'blue'))
 
 theme_set(my_theme)
@@ -75,7 +75,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 ```{r plot total P vs PO4}
 #4 
 P.by.PO4 <- ggplot(A05.NTL.PeterPaul) +
-  geom_point(aes(x='tp_ug', y = 'po4', color = lakename)) +
+  geom_point(aes(x= tp_ug, y = po4, color = lakename)) +
   geom_smooth(method = lm, color = 'black') + 
   xlim(0, 25) +
   ylim (0, 25)
@@ -93,6 +93,24 @@ Tip:
 
 ```{r Create boxplots}
 #5 
+Temp_Boxplot <- ggplot(A05.NTL.PeterPaul, aes(x= month.abb[month], 
+                                        y = temperature_C, color = lakename)) +
+                         geom_boxplot() +
+                         theme(legend.position = 'top',
+                               axis.title = element_text("Month", "Temperature"))
+                          
+                  
+TP_Boxplot <- ggplot(A05.NTL.PeterPaul) +
+  geom_boxplot(aes( x= month.abb[month], y = tp_ug, color = lakename )) + 
+  theme(legend.position = 'none')
+
+TN_Boxplot <- ggplot(A05.NTL.PeterPaul) +
+  geom_boxplot(aes( x= month.abb[month], y = tn_ug, color = lakename )) + 
+  theme(legend.position = "none")
+
+Combined_Boxplot <- plot_grid(Temp_Boxplot, TP_Boxplot,TN_Boxplot, nrow = 3, 
+                              align = "h") +
+  theme(plot.title = c("Temperature", "TP", "TN"))
 
 ```
 
