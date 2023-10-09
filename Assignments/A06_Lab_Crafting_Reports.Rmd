@@ -1,6 +1,6 @@
 ---
 title: 'A06 - Crafting Reports'
-author: "Student Name" 
+author: "Vanshika Mittal" 
 date: "Fall 2023"
 output: pdf_document
 ---
