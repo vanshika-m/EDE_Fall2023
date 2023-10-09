@@ -35,10 +35,10 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 library(tidyverse); library(lubridate); library(here); library(cowplot)
 getwd()
 
-#Assinging a variable to our folder 
+#Assinging a variable to our folder and calling relevant datasets 
 processed_data = "Data/Processed_KEY"
-A05.NTL.PeterPaul <- read.csv(
-  here(processed_data, "NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"),
+A05.NTL.PeterPaul <- read.csv(here(
+  processed_data, "NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"),
                               stringsAsFactors = TRUE, header = TRUE)
 A05.Litter <- read.csv(
   here(processed_data, "NEON_NIWO_Litter_mass_trap_Processed.csv"), 
@@ -63,7 +63,7 @@ my_theme <- theme_minimal() +
   theme(plot.background = element_rect('white'),
     legend.position = "top", 
     plot.title = element_text(color = 'blue'),
-    legend.key = element_rect())
+    legend.box.background = element_rect(color = "black"))
 
 theme_set(my_theme)
 ```
@@ -78,7 +78,7 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 P.by.PO4 <- ggplot(A05.NTL.PeterPaul,aes(x= tp_ug, y = po4, color = lakename))+
             geom_point() +
             geom_smooth(method = lm, color = 'black') + 
-            labs(x = "Total Phosphorous", y = "Total Phosphate")+
+            labs(x = "Total Phosphorous (ug)", y = "Total Phosphate (ug)") +
             xlim(0, 80) +
             ylim (0, 25) 
 
@@ -95,41 +95,45 @@ Tip:
 
 ```{r Create boxplots}
 #5 
-#converting month to a factor with 12 levels 
-A05.NTL.PeterPaul$month <- factor(A05.NTL.PeterPaul$month, levels = c(1:12),
-                                  labels = month.abb)
-                                  
-
 #making boxplots for each variable 
-Temp_Boxplot <- ggplot(A05.NTL.PeterPaul, aes(x= month, y = temperature_C, color = lakename)) +
-                         geom_boxplot() +
-                         theme(legend.position = 'top') + 
-                         labs(x = "Month" , y= "Temperature_C")
-                               
+Temp_Boxplot <- ggplot(A05.NTL.PeterPaul, 
+                       aes(x= factor(month, levels = 1:12, labels = month.abb),
+                       y = temperature_C, color = lakename)) +
+                geom_boxplot() +
+                scale_x_discrete(name = "", drop = FALSE) +
+                theme(legend.position = 'top') + 
+                labs(x = "Month" , y= "Temperature (C)")
                           
-TP_Boxplot <- ggplot(A05.NTL.PeterPaul, aes( x= month, y = tp_ug, color = lakename )) +
-  geom_boxplot() + 
-  theme(legend.position = 'none') + 
-  labs(x = "Month" , y= "Total Phosphorous")
+TP_Boxplot <- ggplot(A05.NTL.PeterPaul, 
+                     aes(x= factor(month, levels = 1:12, labels = month.abb),
+                         y = tp_ug, color = lakename )) +
+              geom_boxplot() + 
+              theme(legend.position = 'none') +
+              scale_x_discrete(name = "", drop = FALSE) +
+              labs(x = "Month" , y= "Total Phosphorous (ug)")
 
-TN_Boxplot <- ggplot(A05.NTL.PeterPaul, aes( x= month, y = tn_ug, color = lakename )) +
-  geom_boxplot() + 
-  theme(legend.position = "none") +
-    labs(x = "Month" , y= "Total Phosphate")
+TN_Boxplot <- ggplot(A05.NTL.PeterPaul,
+                     aes(x= factor(month, levels = 1:12, labels = month.abb),
+                          y = tn_ug, color = lakename )) +
+              geom_boxplot() + 
+              scale_x_discrete(name = "", drop = FALSE) +
+              theme(legend.position = 'none') +
+              labs(x = "Month" , y= "Total Nitrogen (ug)")
 
 #combining the boxplots into one 
 Combined_Boxplot <- plot_grid(Temp_Boxplot, TP_Boxplot,TN_Boxplot, 
-                              nrow = 3, 
-                              align = "hv") +
-  labs(title = "Temperature, Total Phospohorous and Phosphate in Peter and Paul 
-       Lakes across months")
-
+                              nrow = 3, align = "hv") 
+ 
 print(Combined_Boxplot)
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
 
 > Answer: 
+Temperature in both Peter and Paul lakes is similar and decreasing over the months. 
+The total phosphorous content in both lakes does not fluctuate much though there is a slight dip in the phosphorous in July and August before rising again in September in Paul Lake
+The total nitrogen content does not fluctuate much in the two lakes over seasons too. 
+
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -138,22 +142,23 @@ Question: What do you observe about the variables of interest over seasons and b
 ```{r Plot litter}
 #6
 Needles_plot <- ggplot(subset(A05.Litter, functionalGroup == "Needles")) + 
-  geom_point(aes(x= collectDate, y = dryMass, color = nlcdClass)) + 
-  labs(x= "Collection Date", y = "Dry Mass", 
-       title = "Dry Mass of Needles across different collection dates and types of lands")
+                geom_point(aes(x = collectDate,y = dryMass,color = nlcdClass)) + 
+                labs(x= "Collection Date", y = "Dry Mass (g)", 
+title = "Dry mass of needles across collection dates and types of lands")
 
 print(Needles_plot)
 
 #7
 Needles_faceted <- ggplot(subset(A05.Litter, functionalGroup == "Needles"), 
                           aes(x= collectDate, y = dryMass)) +
-  geom_point() +
-  facet_wrap(vars(nlcdClass), nrow = 1) +
-  labs(x= "Collection Date", y = "Dry Mass")
+                  geom_point() +
+                  facet_wrap(vars(nlcdClass), nrow = 1) +
+                  labs(x= "Collection Date", y = "Dry Mass (g)")
 
 print(Needles_faceted)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer: I think 7 is visually more effective as it allows you to see an individual trend within 
+all the types of lands while also comparing them side by side. However, in 6 there is an overlap of many data points which makes it difficult to read. 

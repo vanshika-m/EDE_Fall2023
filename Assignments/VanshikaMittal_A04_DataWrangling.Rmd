@@ -40,10 +40,14 @@ library(here)
 getwd() #working directory is set 
 
 #1c reading the four EPA air datasets into R 
-PM2.5_2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE, header = TRUE)
-PM2.5_2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE, header = TRUE)
-O3_2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE, header = TRUE)
-O3_2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE, header = TRUE)
+PM2.5_2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", 
+                       stringsAsFactors = TRUE, header = TRUE)
+PM2.5_2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", 
+                       stringsAsFactors = TRUE, header = TRUE)
+O3_2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", 
+                    stringsAsFactors = TRUE, header = TRUE)
+O3_2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", 
+                    stringsAsFactors = TRUE, header = TRUE)
 
 #2 
 glimpse(PM2.5_2019)
@@ -71,19 +75,23 @@ O3_2018$Date <- mdy(O3_2018$Date)
 
 #4 selecting certain columns and creating new datasets 
 new_PM2.5_2019 <- select(PM2.5_2019, 
-                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                         COUNTY:SITE_LONGITUDE)
 new_PM2.5_2018 <- select(PM2.5_2018, 
-                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+                         Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                         COUNTY:SITE_LONGITUDE)
 new_O3_2019 <- select(O3_2019, 
-                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                      COUNTY:SITE_LONGITUDE)
 new_O3_2018 <- select(O3_2018, 
-                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY:SITE_LONGITUDE)
+                      Date,DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, 
+                      COUNTY:SITE_LONGITUDE)
 
 #5 replacing column values 
 new_PM2.5_2019 <- mutate(new_PM2.5_2019, AQS_PARAMETER_DESC = "PM25" )
 new_PM2.5_2018 <- mutate(new_PM2.5_2018, AQS_PARAMETER_DESC = "PM25" )
 
-#6
+#6 saving our processed files 
 write.csv(new_PM2.5_2019, file =
             "./Data/Processed/EPAair_PM25_NC2019_processed.csv") 
 write.csv(new_PM2.5_2018, file = 
@@ -128,21 +136,25 @@ df_EPAair <- rbind(new_PM2.5_2019, new_PM2.5_2018, new_O3_2019, new_O3_2018)
 #rearranging the datafrme for a cleaner read 
 new_df_EPAair <-
   df_EPAair %>%
-  filter(Site.Name == "Linville Falls" |Site.Name == "Durham Armory" | Site.Name == "Leggett" |
-          Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" |
-          Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." |
-          Site.Name == "Garinger High School" |  Site.Name == "Castle Hayne"|Site.Name == "Pitt Agri. Center" |
-          Site.Name == "Bryson City" |Site.Name == "Millbrook School") %>%
+  filter(Site.Name == "Linville Falls"|Site.Name == "Durham Armory"| 
+         Site.Name == "Leggett"|Site.Name == "Hattie Avenue"| 
+         Site.Name == "Clemmons Middle"|Site.Name == "Mendenhall School"|
+         Site.Name == "Frying Pan Mountain"|Site.Name == "West Johnston Co."|
+         Site.Name == "Garinger High School"|Site.Name == "Castle Hayne"|
+         Site.Name == "Pitt Agri. Center"|Site.Name == "Bryson City"|
+         Site.Name == "Millbrook School") %>%
   group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
   summarise(mean_AQI = mean(DAILY_AQI_VALUE),
             mean_lat = mean(SITE_LATITUDE),
             mean_long = mean(SITE_LONGITUDE)) %>%
   mutate (month = month(Date)) %>%
   mutate (year = year(Date)) %>%
-  select (Date, month, year, Site.Name,AQS_PARAMETER_DESC, COUNTY, mean_AQI, mean_lat, mean_long)
+  select (Date, month, year, Site.Name,AQS_PARAMETER_DESC, COUNTY, mean_AQI,
+          mean_lat, mean_long)
 
 #9 spreading the dataset with Ozone and PM2.5 AQI values in different columns 
-new_df_EPAair <- pivot_wider(new_df_EPAair, names_from = AQS_PARAMETER_DESC , values_from = mean_AQI)
+new_df_EPAair <- pivot_wider(new_df_EPAair, names_from = AQS_PARAMETER_DESC , 
+                             values_from = mean_AQI)
 
 #10 calling the dimensions
 dim(new_df_EPAair)
