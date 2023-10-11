@@ -96,6 +96,26 @@ knitr::kable(summary_Ozone, caption = "Mean Ozone",
 
 Create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
+```{r echo=FALSE, fig.cap= "Ozone levels distributed across months in 2018"}
+Ozone_2018 <- epa_data %>%
+  filter(Year == 2018)
+
+plot_ozone_2018 <- ggplot(Ozone_2018) +
+              geom_boxplot(aes(x= factor(month, levels = 1:12, labels = month.abb), 
+                         y = Ozone))
+plot_ozone_2018
+```
+
+```{r echo=FALSE, fig.cap = "Ozone levels distributed across months in 2019"}
+Ozone_2019 <- epa_data %>%
+  filter(Year == 2019)
+
+plot_ozone_2019 <- ggplot(Ozone_2019) +
+              geom_boxplot(aes(x= factor(month, levels = 1:12, labels = month.abb), 
+                         y = Ozone))
+plot_ozone_2019 
+```
+
 
 
 ---
