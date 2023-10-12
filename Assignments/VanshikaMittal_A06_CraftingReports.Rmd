@@ -9,31 +9,32 @@ toc : true
 ## Objectives:
 
 1.  More practice with R code chunk options
-1.  Gain proficiency with figures, tables (w/`Kable`) table of contents, etc.
-1.  Debugging knitting issues
+2.  Gain proficiency with figures, tables (w/`Kable`) table of contents, etc.
+3.  Debugging knitting issues
 
 ## Directions
 
 1.  Rename this file `<FirstLast>_A06_CraftingReports.Rmd` (replacing `<FirstLast>` with your first and last name).
-1.  Change "Student Name" on line 3 (above) with your name.
-1.  Work through the tasks, **creating code and output** that fulfill each instruction.
-1.  Be sure your code is tidy; use line breaks to ensure your code fits in the knitted output.
-1.  Be sure to **answer the questions** in this assignment document.
-1.  When you have completed the assignment, **Knit** the text and code into a single PDF file.
-1.  **Be sure that you also commit and push your final Rmd document to your GitHub account**.
+2.  Change "Student Name" on line 3 (above) with your name.
+3.  Work through the tasks, **creating code and output** that fulfill each instruction.
+4.  Be sure your code is tidy; use line breaks to ensure your code fits in the knitted output.
+5.  Be sure to **answer the questions** in this assignment document.
+6.  When you have completed the assignment, **Knit** the text and code into a single PDF file.
+7.  **Be sure that you also commit and push your final Rmd document to your GitHub account**.
 
 ## Task 1 - Basic Markdown
 
 Using markdown, create a table beneath the `Table: EPA Air Quality` line below that summarizes the metadata of the EPA Air Quality data. The first column should have the header "Item" and should include the the three metadata attribute item names: "Source", "Date", and "Filename". The second column should have the header "Value" and include the metadata values: "EPA Air Quality System (AQS)", "2018-2019", and "EPAair_O3_PM25_NC1819_Processed.csv". The first column should be aligned to the right and the second to the left.
 
-Table: EPA Air Quality
+| Item     |                               Value |
+|:---------|------------------------------------:|
+| Source   |        EPA Air Quality System (AQS) |
+| Date     |                           2018-2019 |
+| Filename | EPAair_O3_PM25_NC1819_Processed.csv |
 
-Item | Value
-:------------- | -------------: 
-Source | EPA Air Quality System (AQS)
-Date | 2018-2019
-Filename | EPAair_O3_PM25_NC1819_Processed.csv
----
+: EPA Air Quality
+
+------------------------------------------------------------------------
 
 ## Task 2 - Import packages and data, suppressing messages
 
@@ -50,7 +51,7 @@ epa_data <- read.csv(
   mutate(Date = ymd(Date))
 ```
 
----
+------------------------------------------------------------------------
 
 ## Task 3: Creating tables
 
@@ -90,39 +91,42 @@ knitr::kable(summary_Ozone, caption = "Mean Ozone",
              col.names = c("County", "mu g/m^3"))
 ```
 
----
+------------------------------------------------------------------------
 
-## Task 3: Plots
+## Task 4: Plots
 
 Create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
-```{r echo=FALSE, fig.cap= "Ozone levels distributed across months in 2018"}
+```{r echo=FALSE, fig.cap= "Ozone levels distributed across months in 2018", fig.height = 4, fig.width = 6}
 Ozone_2018 <- epa_data %>%
   filter(Year == 2018)
 
 plot_ozone_2018 <- ggplot(Ozone_2018) +
-              geom_boxplot(aes(x= factor(month, levels = 1:12, labels = month.abb), 
-                         y = Ozone))
+              geom_boxplot(aes(x= factor(Month, levels = 1:12, labels = month.abb), 
+                         y = Ozone)) +
+              labs(x="Month", y= " Ozone Concentration(mu g/m^3)")
 plot_ozone_2018
 ```
 
-```{r echo=FALSE, fig.cap = "Ozone levels distributed across months in 2019"}
+```{r echo=FALSE, fig.cap = "Ozone levels distributed across months in 2019",fig.height = 4, fig.width = 6}
 Ozone_2019 <- epa_data %>%
   filter(Year == 2019)
 
 plot_ozone_2019 <- ggplot(Ozone_2019) +
-              geom_boxplot(aes(x= factor(month, levels = 1:12, labels = month.abb), 
-                         y = Ozone))
+              geom_boxplot(aes(x= factor(Month, levels = 1:12, labels = month.abb), 
+                         y = Ozone)) +
+              labs(x ="Month", y = " Ozone Concentration(mu g/m^3)")
+
 plot_ozone_2019 
 ```
 
+------------------------------------------------------------------------
 
-
----
 \newpage
 
-## Task 4: Knit and submit.
-Add a table of contents to your document and knit to a PDF. Submit your PDF to Sakai, but also be sure to commit and push your Rmd file used to create this knit document to GitHub. In the section below, add a link to your GitHub repository. 
+## Task 5: Knit and submit.
+
+Add a table of contents to your document and knit to a PDF. Submit your PDF to Sakai, but also be sure to commit and push your Rmd file used to create this knit document to GitHub. In the section below, add a link to your GitHub repository.
 
 ## Git Repository
 
