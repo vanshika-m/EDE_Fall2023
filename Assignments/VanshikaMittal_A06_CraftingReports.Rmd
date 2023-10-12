@@ -27,7 +27,7 @@ toc : true
 Using markdown, create a table beneath the `Table: EPA Air Quality` line below that summarizes the metadata of the EPA Air Quality data. The first column should have the header "Item" and should include the the three metadata attribute item names: "Source", "Date", and "Filename". The second column should have the header "Value" and include the metadata values: "EPA Air Quality System (AQS)", "2018-2019", and "EPAair_O3_PM25_NC1819_Processed.csv". The first column should be aligned to the right and the second to the left.
 
 | Item     |                               Value |
-|:---------|------------------------------------:|
+|----------:|:-------------------------------------|
 | Source   |        EPA Air Quality System (AQS) |
 | Date     |                           2018-2019 |
 | Filename | EPAair_O3_PM25_NC1819_Processed.csv |
@@ -97,7 +97,7 @@ knitr::kable(summary_Ozone, caption = "Mean Ozone",
 
 Create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
-```{r echo=FALSE, fig.cap= "Ozone levels distributed across months in 2018", fig.height = 4, fig.width = 6}
+```{r echo=FALSE, fig.cap= "Ozone levels distributed across months in 2018", fig.height = 4, fig.width = 7, fig.align='left'}
 Ozone_2018 <- epa_data %>%
   filter(Year == 2018)
 
@@ -108,7 +108,7 @@ plot_ozone_2018 <- ggplot(Ozone_2018) +
 plot_ozone_2018
 ```
 
-```{r echo=FALSE, fig.cap = "Ozone levels distributed across months in 2019",fig.height = 4, fig.width = 6}
+```{r echo=FALSE, fig.cap = "Ozone levels distributed across months in 2019",fig.height = 4, fig.width = 7, fig.align='left'}
 Ozone_2019 <- epa_data %>%
   filter(Year == 2019)
 
