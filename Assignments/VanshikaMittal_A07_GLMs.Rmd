@@ -36,7 +36,8 @@ library (tidyverse); library(agricolae)
 raw_data = "~/EDE_Fall2023/Data/Raw"
 Litter_Dataset=read.csv(here(raw_data,"NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
                           ,header = TRUE, stringsAsFactors = TRUE)
-
+#changing the date column to a date object 
+Litter_Dataset$sampledate <- mdy(Litter_Dataset$sampledate)
 
 #2
 
