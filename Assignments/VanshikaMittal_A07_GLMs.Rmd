@@ -26,7 +26,16 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 2. Build a ggplot theme and set it as your default theme.
 
 ```{r setup2}
-#1
+#1 
+getwd() 
+#working directry is set correct 
+#loading necessary packages 
+#install.packages("agricolae")
+library (tidyverse); library(agricolae)
+#loading dataset 
+raw_data = "~/EDE_Fall2023/Data/Raw"
+Litter_Dataset=read.csv(here(raw_data,"NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
+                          ,header = TRUE, stringsAsFactors = TRUE)
 
 
 #2
