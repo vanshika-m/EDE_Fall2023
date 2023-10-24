@@ -79,7 +79,7 @@ TempbyDepth <- ggplot(clean_Litter_Dataset, aes(x= depth, y = temperature_C)) +
               geom_point(color = 'lightblue') +
               geom_smooth(method = lm, color = 'blue')+
               ylim(0,35)+
-              labs(x = 'Depth of the lake ()', y = 'Temperature of the lake (C)')
+              labs(x = 'Depth of the lake (m)', y = 'Temperature of the lake (C)')
   
 TempbyDepth
 ```
@@ -96,16 +96,14 @@ decreases.
 
 ```{r linear.regression, echo=TRUE}
 #7 performing a linear regression and 
-Temp_Depth_Regression <- lm (clean_Litter_Dataset$temperature_C ~ clean_Litter_Dataset$depth)
-summary(Temp_Depth_Regression) #displaying the results 
+Temp_Depth_LR <- lm (data = clean_Litter_Dataset,temperature_C ~ depth)
+summary(Temp_Depth_LR) #displaying the results 
 ```
 
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:The negative coefficient -1.94621 confirms that temperature and depth are inveresely related to each other. 
-
-
+> Answer:The slope of the line is -1.94621 which confirms that temperature and depth have a negative correlation. This means that with 1m rise in depth, we predict that the temperature will decrease by approximately 1.95 degree celsius. The model explains approximately 74% of the variability in temperature. The degrees of freedom for our findings are 9726 which is based on our 9728 observations and 2 variables being considered in our regression.  The reported p values for our linear regression are statistically significant. 
 ---
 
 ## Multiple regression
@@ -117,20 +115,18 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 10. Run a multiple regression on the recommended set of variables. 
 
 ```{r temperature.model}
-#9
-
-
-
-#10
-
-
+#9 running an AIC to see which explanatory variables should be included 
+All_AIC <- lm (data = clean_Litter_Dataset, temperature_C ~ depth + year4 + daynum)
+step(All_AIC)
+ 
+#10 running a linear regression with multiple variables 
+Temp_MR <- lm (data = clean_Litter_Dataset,temperature_C ~ depth + year4 + daynum)
+summary (Temp_MR)
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
-
-
+> Answer: According to the AIC values, all three variables depth, year4 and daynum are recommended to predict the change in temperature. This model too explains approximately 74% of the observed variance. There is not a large increase from the earlier model that only used depth as the explanatory variable. 
 
 ---
 ## Analysis of Variance
