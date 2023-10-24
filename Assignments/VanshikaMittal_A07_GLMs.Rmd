@@ -40,7 +40,13 @@ Litter_Dataset=read.csv(here(raw_data,"NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
 Litter_Dataset$sampledate <- mdy(Litter_Dataset$sampledate)
 
 #2
-
+#setting my theme 
+my_theme <- theme_minimal()+
+  theme(plot.background = element_rect ('white'),
+        legend.position = "top", 
+        plot.title = element_text(color = 'black'),
+        legend.box.background = element_rect(color = "black"))
+theme_set(my_theme)
 
 ```
 
@@ -49,9 +55,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
-
+H0: The mean lake temperature recorded during July does not change with depths across all lakes.
+Ha: The mean lake temperature recorded during July changes with depths across all lakes.
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
  * Only dates in July. 
@@ -61,12 +66,22 @@ Ha:
 5. Visualize the relationship among the two continuous variables with a scatter plot of temperature by depth. Add a smoothed line showing the linear model, and limit temperature values from 0 to 35 °C. Make this plot look pretty and easy to read.
 
 ```{r scatterplot}
-#4
-
-
-#5
-
-
+#4 A pipe function where 
+clean_Litter_Dataset <- 
+  Litter_Dataset %>%
+  mutate(month = month(sampledate)) %>% #creating a new column for month 
+  filter(month == "7") %>% #keeping only dates in July 
+  select(lakename, year4, daynum, depth, temperature_C) %>% #keeping only few columns 
+  na.omit #dropping any missing values from the dataset 
+  
+#5 visualising a scatter plot 
+TempbyDepth <- ggplot(clean_Litter_Dataset, aes(x= depth, y = temperature_C)) +
+              geom_point(color = 'lightblue') +
+              geom_smooth(method = lm, color = 'blue')+
+              ylim(0,35)+
+              labs(x = 'Depth of the lake ()', y = 'Temperature of the lake (C)')
+  
+TempbyDepth
 ```
 
 
