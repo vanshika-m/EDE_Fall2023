@@ -135,16 +135,18 @@ summary (Temp_MR)
 
 ```{r anova.model}
 #12 creating two sets of model 
-Litter_Anova <- aov(data = clean_Litter_Dataset, temperature_C ~ depth + year4 + daynum)
+Litter_Anova <- aov(data = clean_Litter_Dataset, temperature_C ~ lakename)
 summary (Litter_Anova)
 
-Litter_LR <- lm(data = clean_Litter_Dataset, temperature_C ~ depth + year4 + daynum)
+Litter_LR <- lm(data = clean_Litter_Dataset, temperature_C ~ lakename)
 summary(Litter_LR)
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: Our null hypothesis for this analysis is that there is no difference in mean temperature among lakes. Since our p values are significant and less than 0.05, we can reject our null hypothesis.
+> Answer: H0: The mean of temperatures across all lakes is the same. 
+Ha: Not all mean temperatures are equal. 
+Since our p values are significant and less than 0.05, we can reject our null hypothesis which indicates that the means are different. 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
@@ -163,22 +165,21 @@ Temp_Depth_Graph
 15. Use the Tukey's HSD test to determine which lakes have different means.
 
 ```{r tukey.test}
-#15
+#15 conducting the test 
+TukeyHSD(Litter_Anova)
 
-
+#finding which groups have same temperature means
+Temp_lakes_Groups <- HSD.test(Litter_Anova, "lakename", group = TRUE)
+Temp_lakes_Groups
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
-
- 
+>Answer:In the results, Peter lake has been assigned group c. Other lake which belongs to this group is Paul lake. Therefore, Peter and Paul lakes have the same temperature. The Central Long Lake has a mean temperature significantly different from all the other lakes and is assigned group a in our results. 
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
-
-
+>Answer: We can conduct a two sample test between the temperatures for Peter and Paul lake to find whether they have the same or different means. 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
@@ -194,5 +195,7 @@ two_sample_test
 >Answer: 
 H0 : The mean temperature of Crampton Lake and Ward Lake in July is the same. 
 Ha: The mean temperature of Crampton Lake and Ward Lake in July is different. 
-Since our p-value is 0.2649 which is greater than 0.05, we cannot reject the null value. 
-This does not match our answer for part 16 where we rejected our null hypothesis. 
+Since our p-value is 0.2649 which is greater than 0.05, we cannot reject the null hypothesis.
+This result matched the result from part 16 as crampton and ward lakes were assigned similar groups. 
+
+
