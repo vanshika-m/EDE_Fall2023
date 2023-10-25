@@ -152,13 +152,12 @@ summary(Litter_LR)
 #14.
 Temp_Depth_Graph <- ggplot(Litter_Dataset, aes(x = depth, y = temperature_C, 
                                                color = lakename)) + 
-                    geom_point()+
+                    geom_point(alpha = 0.5)+
                     geom_smooth(method = lm, se = FALSE) + 
                     ylim(0,35)+
                     xlim (0,15)+
                     labs(x = 'Depth of the lake (m)', y = 'Temperature of the lake (C)')
 Temp_Depth_Graph 
-
 ```
 
 15. Use the Tukey's HSD test to determine which lakes have different means.
