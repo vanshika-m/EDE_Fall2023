@@ -134,22 +134,30 @@ summary (Temp_MR)
 12. Now we want to see whether the different lakes have, on average, different temperatures in the month of July. Run an ANOVA test to complete this analysis. (No need to test assumptions of normality or similar variances.) Create two sets of models: one expressed as an ANOVA models and another expressed as a linear model (as done in our lessons).
 
 ```{r anova.model}
-#12
+#12 creating two sets of model 
+Litter_Anova <- aov(data = clean_Litter_Dataset, temperature_C ~ depth + year4 + daynum)
+summary (Litter_Anova)
 
-
+Litter_LR <- lm(data = clean_Litter_Dataset, temperature_C ~ depth + year4 + daynum)
+summary(Litter_LR)
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
-
-
+> Answer: Our null hypothesis for this analysis is that there is no difference in mean temperature among lakes. Since our p values are significant and less than 0.05, we can reject our null hypothesis.
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
 ```{r scatterplot.2}
 #14.
-
+Temp_Depth_Graph <- ggplot(Litter_Dataset, aes(x = depth, y = temperature_C, 
+                                               color = lakename)) + 
+                    geom_point()+
+                    geom_smooth(method = lm, se = FALSE) + 
+                    ylim(0,35)+
+                    xlim (0,15)+
+                    labs(x = 'Depth of the lake (m)', y = 'Temperature of the lake (C)')
+Temp_Depth_Graph 
 
 ```
 
