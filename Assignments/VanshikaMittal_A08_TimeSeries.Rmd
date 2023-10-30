@@ -27,7 +27,17 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 * Set your ggplot theme
 
 ```{r}
+getwd()
+install.packages("trend")
+library(tidyverse); library(lubridate); library(zoo); library(trend)
 
+#setting my theme 
+my_theme <- theme_minimal()+
+  theme(plot.background = element_rect ('white'),
+        legend.position = "top", 
+        plot.title = element_text(color = 'black'),
+        legend.box.background = element_rect(color = "black"))
+theme_set(my_theme)
 ```
 
 
@@ -35,7 +45,8 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r, message = FALSE}
 #1
-
+raw_data = "~/EDE_Fall2023/Data/Raw"
+Ozone_dataset1 <- read.csv(raw_data, )
 ```
 
 ## Wrangle
