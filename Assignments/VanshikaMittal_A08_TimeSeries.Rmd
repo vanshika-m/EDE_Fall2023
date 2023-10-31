@@ -78,20 +78,28 @@ dim(GaringerOzone)
 
 4. Wrangle your dataset so that it only contains the columns Date, Daily.Max.8.hour.Ozone.Concentration, and DAILY_AQI_VALUE. 
 
-5. Notice there are a few days in each year that are missing ozone concentrations. We want to generate a daily dataset, so we will need to fill in any missing days with NA. Create a new data frame that contains a sequence of dates from 2010-01-01 to 2019-12-31 (hint: `as.data.frame(seq())`). Call this new data frame Days. Rename the column name in Days to "Date". #discussed 
+5. Notice there are a few days in each year that are missing ozone concentrations. We want to generate a daily dataset, so we will need to fill in any missing days with NA. Create a new data frame that contains a sequence of dates from 2010-01-01 to 2019-12-31 (hint: `as.data.frame(seq())`). Call this new data frame Days. Rename the column name in Days to "Date". 
 
 6. Use a `left_join` to combine the data frames. Specify the correct order of data frames within this function so that the final dimensions are 3652 rows and 3 columns. Call your combined data frame GaringerOzone. 
 
 ```{r}
-# 3
+# 3 changing the date column 
+GaringerOzone$Date <- mdy(GaringerOzone$Date)
 
-# 4
+# 4 keeping a few columns 
+GaringerOzone <- select(GaringerOzone, Date, Daily.Max.8.hour.Ozone.Concentration,
+                        DAILY_AQI_VALUE)
 
 # 5
+start_date <- as.Date("2010-01-01") #assigning a start date 
+end_date <- as.Date("2019-12-31") #assigning an end date 
+#creating a new df with a sequence of dates from our start to end date 
+Days <- as.data.frame(seq(start_date, end_date, by = "days")) 
+colnames(Days) <- "Date" #renaming the column 
 
-# 6
-
-
+# 6 joining the date sq. df to find NA values 
+GaringerOzone <- left_join(Days, GaringerOzone)
+dim(GaringerOzone) #checking dimensions of our new df 
 ```
 
 ## Visualize
@@ -100,10 +108,16 @@ dim(GaringerOzone)
 
 ```{r}
 #7
+Ozone_ppm <- ggplot(GaringerOzone, aes(x = Date, 
+                                       y = Daily.Max.8.hour.Ozone.Concentration)) + 
+  geom_point(color = "lightblue") + 
+  geom_smooth(method = lm, color = "blue") +
+  labs(x = "Years", y = "Ozone Concentration (ppm)")
 
+Ozone_ppm 
 ```
 
->Answer:
+>Answer: Over the years, there is a slight decrease in the level of ozone concentrations. 
 
 ## Time Series Analysis
 
