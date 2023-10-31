@@ -126,18 +126,36 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 8. Use a linear interpolation to fill in missing daily data for ozone concentration. Why didn't we use a piecewise constant or spline interpolation?
 
 ```{r}
-#8
+#8 checking the number of NA's 
+summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration) 
+
+#replacing NA's through linear interpolation 
+GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- zoo::na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
+
+#checking whether NA's have been removed and to cross check the summary statistics for this variable
+summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration) 
 
 ```
 
-> Answer: 
+> Answer:  
 
 
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
 ```{r}
-#9
+#9 
+GaringerOzone.monthly <- 
+  GaringerOzone %>% 
+  mutate (Year = year(Date), Month = month(Date)) %>% #separating month and year 
+  group_by(Year, Month) %>% #grouping by month and year 
+  summarise(mean_ozone_conc = mean(Daily.Max.8.hour.Ozone.Concentration)) #finding mean ozone concentrations each month 
 
+#creating a new column with month, year and first day of each month 
+GaringerOzone.monthly <- 
+  GaringerOzone.monthly %>% 
+  mutate(Date = paste(Year,"-" ,Month,"-",01))
+#assigning it a date object 
+GaringerOzone.monthly$Date <- ymd(GaringerOzone.monthly$Date)
 ```
 
 
