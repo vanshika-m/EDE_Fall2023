@@ -131,7 +131,8 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration) 
 
 #replacing NA's through linear interpolation 
-GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- zoo::na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
+GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <-
+  zoo::na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 
 #checking whether NA's have been removed and to cross check the summary statistics for this variable
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration) 
@@ -144,12 +145,12 @@ summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
 ```{r}
-#9 
+#9 finding mean ozone concentrations each month 
 GaringerOzone.monthly <- 
   GaringerOzone %>% 
   mutate (Year = year(Date), Month = month(Date)) %>% #separating month and year 
   group_by(Year, Month) %>% #grouping by month and year 
-  summarise(mean_ozone_conc = mean(Daily.Max.8.hour.Ozone.Concentration)) #finding mean ozone concentrations each month 
+  summarise(mean_ozone_conc = mean(Daily.Max.8.hour.Ozone.Concentration)) 
 
 #creating a new column with month, year and first day of each month 
 GaringerOzone.monthly <- 
@@ -228,17 +229,22 @@ Along with the trend that can be observed in the graph and from the statistical 
 16. Run the Mann Kendall test on the non-seasonal Ozone monthly series. Compare the results with the ones obtained with the Seasonal Mann Kendall on the complete series.
 
 ```{r}
-#15 
-GaringerOzone.monthly.Components <- as.data.frame(ozone.monthly.decomp$time.series[,2:3])
+#15 decomposing the components and then combining trend and remainder back 
+GaringerOzone.monthly.Components <- 
+  as.data.frame(ozone.monthly.decomp$time.series[,2:3])
 
-nonseasonal.GaringerOzone.monthly <- c(GaringerOzone.monthly.Components$trend, 
-                                             GaringerOzone.monthly.Components$remainder)
+nonseasonal.GaringerOzone.monthly <- (GaringerOzone.monthly.Components$trend 
+                                +GaringerOzone.monthly.Components$remainder)
+
 #assign a new ts object 
-nonseasonal.GaringerOzone.monthly.ts <- ts(nonseasonal.GaringerOzone.monthly, start= c(f_year, f_month), frequency = 12)
+nonseasonal.GaringerOzone.monthly.ts <- ts(nonseasonal.GaringerOzone.monthly, 
+                                    start= c(f_year, f_month), frequency = 12)
 
-#16
-nonseasonal.GaringerOzone.monthly.ts.trend <- Kendall::MannKendall(nonseasonal.GaringerOzone.monthly.ts)
+#16 conducting the test 
+nonseasonal.GaringerOzone.monthly.ts.trend <- 
+  Kendall::MannKendall(nonseasonal.GaringerOzone.monthly.ts)
+#summarising the results 
 summary(nonseasonal.GaringerOzone.monthly.ts.trend)
 ```
 
-> Answer: Our p-value is very close to 0 ( a value less than 0.5) which means we can reject the null hypothesis and concludde that the our data is not stationary and has a trend over the given period of time. These results are comparable to the Seasonal MannKendall test which I ran earlier as they both echo the same result. 
+> Answer: Our p-value is less than 0.5 which means we can reject the null hypothesis and concludde that the our data is not stationary and has a trend over the given period of time. These results are comparable to the Seasonal MannKendall test which I ran earlier as they both echo the same result. 
