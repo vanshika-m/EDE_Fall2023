@@ -43,8 +43,8 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
-Nebraska.gageheight <- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp'))
-Nebraska.gageheight <- filter(Nebraska.gageheight, COUNTYFP == '031')
+Nebraska.gageheight.sf <- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp'))
+Nebraska.gageheight.sf <- filter(Nebraska.gageheight, COUNTYFP == '031')
 
 class(Nebraska.gageheight)
 
@@ -53,7 +53,6 @@ st_crs(Nebraska.gageheight)
 
 #5. Plot the data
 mapview(Nebraska.gageheight)
-
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look for the EPSG code on <https://spatialreference.org> and examine the link for "Well Known Text as HTML" or "Human-Readable OGC WKT"...)
@@ -72,17 +71,15 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-
+NWIS.df <- read.csv(here('Data/Raw/NWIS_SiteInfo_NE_RAW.csv'), stringsAsFactors = TRUE)
 
 #8. Reveal the names of the columns
-
-
+colnames(NWIS.df)
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
-> ANSWER:
-> 
-
+> ANSWER: x coordinate: dec_lat_va
+> y coordinate: dec_long_va
 
 ### Convert the dataframe to a spatial features ("sf") dataframe
 
