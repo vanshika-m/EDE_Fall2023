@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Vanshika Mittal"
 output: pdf_document
 ---
 
@@ -25,8 +25,8 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
-
-
+library(tidyverse); library(rvest)
+getwd()
 ```
 
 2. We will be scraping data from the NC DEQs Local Water Supply Planning website, specifically the Durham's 2022 Municipal Local Water Supply Plan (LWSP): 
@@ -37,8 +37,9 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 Indicate this website as the as the URL to be scraped. (In other words, read the contents into an `rvest` webpage object.)
 
 ```{r set.the.scraping.website}
-#2 
-
+#2 fetching the contents 
+webpage <- read_html("https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022")
+webpage 
 ```
 
 3. The data we want to collect are listed below:
@@ -57,7 +58,25 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3 
+system_name <- webpage %>%
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)")%>%
+  html_text()
+system_name
 
+PWSID <- webpage %>%
+  html_nodes("td tr:nth-child(1) td:nth-child(5)")%>%
+  html_text()
+PWSID
+
+ownership <- webpage %>%
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)")%>%
+  html_text()
+ownership
+
+maximum_day_use <- webpage %>%
+  html_nodes("th~ td+ td")%>%
+  html_text()
+maximum_day_use
 ```
 
 
@@ -71,6 +90,22 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
+month <- webpage %>%
+  html_nodes(".fancy-table:nth-child(31) tr+ tr th")%>%
+  html_text()
+month
+
+Durfam_water_df <- data.frame("System Name" = system_name,
+                              "PWSID" = PWSID,
+                              "Ownership" = ownership,
+                              "Maximum Day Use" = as.numeric(maximum_day_use),
+                               "Month" = month,
+                              "Year" = rep(2022, 12)
+                              )
+
+Durfam_water_df <- Durfam_water_df %>%
+  mutate(Date = my(paste(Month, "-", Year))) %>%
+  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date")
 
 #5 
 
