@@ -25,8 +25,8 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r 1. Project Setup, message = FALSE}
 #1 
-library(tidyverse); library(rvest)
-getwd()
+library(tidyverse); library(rvest) #loading necessary packages 
+getwd() #checking working directory 
 ```
 
 2. We will be scraping data from the NC DEQs Local Water Supply Planning website, specifically the Durham's 2022 Municipal Local Water Supply Plan (LWSP): 
@@ -57,7 +57,7 @@ In the code chunk below scrape these values, assigning them to four separate var
 >HINT: The first value should be "Durham", the second "03-32-010", the third "Municipality", and the last should be a vector of 12 numeric values (represented as strings)".
 
 ```{r scrape.the.data}
-#3 
+#3 scrpaing required variables 
 system_name <- webpage %>%
   html_nodes("div+ table tr:nth-child(1) td:nth-child(2)")%>%
   html_text()
@@ -90,11 +90,13 @@ maximum_day_use
 
 ```{r create.a.dataframe.from.scraped.data}
 #4 
+#scraping month too since the values are not chronoligical in nature 
 month <- webpage %>%
   html_nodes(".fancy-table:nth-child(31) tr+ tr th")%>%
   html_text()
 month #this will be used consistently as the order of the months remains the same 
 
+#compiling the dataframe 
 Durham_water_df <- data.frame("System Name" = system_name,
                               "PWSID" = PWSID,
                               "Ownership" = ownership,
@@ -108,19 +110,21 @@ Durham_water_df <- Durham_water_df %>%
   select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
 
 #5 
-
-my_theme <- theme_minimal() + theme(plot.background = element_rect('white'),
-legend.position = "top",
-plot.title = element_text(color = 'blue'), legend.box.background = element_rect(color = "black"))
+#setting my theme 
+my_theme <- theme_minimal() + 
+  theme(plot.background = element_rect('white'),
+        legend.position = "top",
+        plot.title = element_text(color = 'blue'), 
+        legend.box.background = element_rect(color = "black"))
 theme_set(my_theme)
 
+#plotting a line graph for the df 
 ggplot(Durham_water_df, aes(x = factor(Month, levels = month.abb),
                             y = Maximum.Day.Use, group = 1)) +
          geom_line() +
          geom_smooth(method="loess",se=FALSE) +
          labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)", 
-              title = paste("Maximum Daily Withdrawl of Water by Month in 2022 for",
-                            system_name))
+        title = "Maximum Daily Withdrawl of Water by Month in 2022 for Durham")
 ```
 
 6. Note that the PWSID and the year appear in the web address for the page we scraped. Construct a function using your code above that can scrape data for any PWSID and year for which the NC DEQ has data. **Be sure to modify the code to reflect the year and site (pwsid) scraped**.
@@ -128,14 +132,13 @@ ggplot(Durham_water_df, aes(x = factor(Month, levels = month.abb),
 ```{r construct.a.scraping.function}
 #6. 
 #creating a function to scrape the website as per the pwsid and year required
-function.scrape <- function(upwsid,uyear){
+function.scrape <- function(cpwsid,cyear){
   
 base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php?"
-#putting the pwsid and year as a variable so it can be changed 
-pwsid <- upwsid 
-year <- uyear
+#putting the pwsid and year as a variable so it can be changed
+pwsid <- cpwsid 
+year <- cyear
 scrape_url <- paste0(base_url, 'pwsid=', pwsid, '&year=', year)
-print(scrape_url)
   
 scrape_webpage <- read_html(scrape_url) #webpage code for custom pwsid and year  
 
@@ -157,7 +160,7 @@ maximum_day_use <- scrape_webpage %>%
   html_text()
 
 #creating the df 
-max_day_use_df <- data.frame("System Name" = system_name,
+the_df <- data.frame("System Name" = system_name,
                               "PWSID" = PWSID,
                               "Ownership" = ownership,
                               "Maximum Day Use" = as.numeric(maximum_day_use),
@@ -165,7 +168,7 @@ max_day_use_df <- data.frame("System Name" = system_name,
                                "Year" = rep(year, 12)
                               )
 
-max_day_use_df <- max_day_use_df %>%
+the_df <- the_df %>%
   mutate(Date = my(paste(Month, "-", Year))) %>%
   select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
 }
@@ -207,7 +210,16 @@ Asheville_2015 <- ggplot(the_df2, aes(x = factor(Month, levels = month.abb),
 Asheville_2015
 
 #combining the data from Durham and Asheville for 2015 
-Durham_Asheville_df <- full_join(the_df1, the_df2 )
+Durham_Asheville_df <- full_join(the_df1, the_df2)
+
+Durham_Asheville_graph <- ggplot(Durham_Asheville_df, 
+                                aes(x = factor(Month, levels = month.abb),
+                            y = Maximum.Day.Use) ) +
+  geom_line() +
+  geom_smooth(method="loess") +
+  labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)")
+
+Durham_Asheville_graph
 ```
 
 
@@ -217,6 +229,20 @@ Durham_Asheville_df <- full_join(the_df1, the_df2 )
 
 ```{r fetch.and.plot.Asheville.multiyear.data }
 #9 
+years <- c(2010:2021) #a list of years 
+Ash_pwsid <- "01-11-010" #storing the pwsid in a variable 
+
+#scraping the maximum daily use across the years 
+Asheville_dfs <- map2(Ash_pwsid, years, function.scrape)
+#combining the different dfs into one 
+Asheville_combined <- bind_rows(Asheville_dfs)
+
+Ash_year <- year(Asheville_combined$Date[1])
+
+ggplot(Asheville_combined,aes(x = factor(Month, levels = month.abb),
+                            y = Maximum.Day.Use), color = Ash_year ) +
+  geom_line() + 
+  geom_smooth(method = "loess", se = FALSE)
 
 
 ```
