@@ -93,7 +93,7 @@ maximum_day_use
 month <- webpage %>%
   html_nodes(".fancy-table:nth-child(31) tr+ tr th")%>%
   html_text()
-month
+month #this will be used consistently as the order of the months remains the same 
 
 Durham_water_df <- data.frame("System Name" = system_name,
                               "PWSID" = PWSID,
@@ -127,13 +127,16 @@ ggplot(Durham_water_df, aes(x = factor(Month, levels = month.abb),
 
 ```{r construct.a.scraping.function}
 #6. 
+#creating a function to scrape the website as per the pwsid and year required
+function.scrape <- function(upwsid,uyear){
+  
 base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php?"
 #putting the pwsid and year as a variable so it can be changed 
-pwsid <- "03-32-010" 
-year <- 2022
+pwsid <- upwsid 
+year <- uyear
 scrape_url <- paste0(base_url, 'pwsid=', pwsid, '&year=', year)
 print(scrape_url)
-
+  
 scrape_webpage <- read_html(scrape_url) #webpage code for custom pwsid and year  
 
 #retriving interested datapoints from the scraped webpage 
@@ -153,10 +156,7 @@ maximum_day_use <- scrape_webpage %>%
   html_nodes("th~ td+ td")%>%
   html_text()
 
-month <- scrape_webpage %>%
-  html_nodes(".fancy-table:nth-child(31) tr+ tr th")%>%
-  html_text()
-
+#creating the df 
 max_day_use_df <- data.frame("System Name" = system_name,
                               "PWSID" = PWSID,
                               "Ownership" = ownership,
@@ -168,6 +168,7 @@ max_day_use_df <- data.frame("System Name" = system_name,
 max_day_use_df <- max_day_use_df %>%
   mutate(Date = my(paste(Month, "-", Year))) %>%
   select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
+}
 
 ```
 
@@ -175,108 +176,38 @@ max_day_use_df <- max_day_use_df %>%
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7 
-base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php?"
-#putting the pwsid and year as a variable so it can be changed 
-pwsid <- "03-32-010" 
-year <- 2015
-scrape_url <- paste0(base_url, 'pwsid=', pwsid, '&year=', year)
-print(scrape_url)
 
-scrape_webpage <- read_html(scrape_url) #webpage code for custom pwsid and year  
+the_df1 <- function.scrape("03-32-010", 2015)
 
-#retriving interested datapoints from the scraped webpage 
-system_name <- scrape_webpage %>%
-  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)")%>%
-  html_text()
-
-PWSID <- scrape_webpage %>%
-  html_nodes("td tr:nth-child(1) td:nth-child(5)")%>%
-  html_text()
-
-ownership <- scrape_webpage %>%
-  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)")%>%
-  html_text()
-
-maximum_day_use <- scrape_webpage %>%
-  html_nodes("th~ td+ td")%>%
-  html_text()
-
-month <- scrape_webpage %>%
-  html_nodes(".fancy-table:nth-child(31) tr+ tr th")%>%
-  html_text()
-
-max_day_use_df <- data.frame("System Name" = system_name,
-                              "PWSID" = PWSID,
-                              "Ownership" = ownership,
-                              "Maximum Day Use" = as.numeric(maximum_day_use),
-                               "Month" = month,
-                               "Year" = rep(year, 12)
-                              )
-
-max_day_use_df <- max_day_use_df %>%
-  mutate(Date = my(paste(Month, "-", Year))) %>%
-  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
-
-Durham_2015 <- ggplot(max_day_use_df, aes(x = factor(Month, levels = month.abb),
+Durham_2015 <- ggplot(the_df1 , aes(x = factor(Month, levels = month.abb),
                             y = Maximum.Day.Use, group = 1)) +
                       geom_line() +
                       geom_smooth(method="loess",se=FALSE) +
                       labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)", 
-                            title = paste("Maximum Daily Withdrawl of Water 
-                                          by Month for",system_name,"in", year))
-Durham_2015
+        title = "Maximum Daily Withdrawl of Water by Month for Durham in 2015")
 
+Durham_2015
 ```
 
 8. Use the function above to extract data for Asheville (PWSID = 01-11-010) in 2015. Combine this data with the Durham data collected above and create a plot that compares Asheville's to Durham's water withdrawals.
 
 ```{r fetch.and.plot.Asheville.2015.data}
 #8 
-base_url <- "https://www.ncwater.org/WUDC/app/LWSP/report.php?"
-#putting the pwsid and year as a variable so it can be changed 
-pwsid <- "01-11-010" 
-year <- 2015
-scrape_url <- paste0(base_url, 'pwsid=', pwsid, '&year=', year)
-print(scrape_url)
+#scraping values for Asheville in 2015 
+the_df2 <- function.scrape("01-11-010", 2015)
 
-scrape_webpage <- read_html(scrape_url) #webpage code for custom pwsid and year  
-
-#retriving interested datapoints from the scraped webpage 
-system_name <- scrape_webpage %>%
-  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)")%>%
-  html_text()
-
-PWSID <- scrape_webpage %>%
-  html_nodes("td tr:nth-child(1) td:nth-child(5)")%>%
-  html_text()
-
-ownership <- scrape_webpage %>%
-  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)")%>%
-  html_text()
-
-maximum_day_use <- scrape_webpage %>%
-  html_nodes("th~ td+ td")%>%
-  html_text()
-
-max_day_use_df <- data.frame("System Name" = system_name,
-                              "PWSID" = PWSID,
-                              "Ownership" = ownership,
-                              "Maximum Day Use" = as.numeric(maximum_day_use),
-                               "Month" = month,
-                               "Year" = rep(year, 12))
-
-max_day_use_df <- max_day_use_df %>%
-  mutate(Date = my(paste(Month, "-", Year))) %>%
-  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
-
-Asheville_2015 <- ggplot(max_day_use_df, aes(x = factor(Month, levels = month.abb),
+#plotting the graph
+Asheville_2015 <- ggplot(the_df2, aes(x = factor(Month, levels = month.abb),
                             y = Maximum.Day.Use, group = 1)) +
                       geom_line() +
                       geom_smooth(method="loess",se=FALSE) +
                       labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)", 
-                            title = paste("Maximum Daily Withdrawl of Water 
-                                          by Month for",system_name,"in", year))
+      title = "Maximum Daily Withdrawl of Water by Month for Asheville in 2015")
+
 Asheville_2015
+
+#combining the data from Durham and Asheville for 2015 
+Durham_Asheville_df <- full_join(the_df1, the_df2 )
 ```
 
 
