@@ -95,7 +95,7 @@ month <- webpage %>%
   html_text()
 month
 
-Durfam_water_df <- data.frame("System Name" = system_name,
+Durham_water_df <- data.frame("System Name" = system_name,
                               "PWSID" = PWSID,
                               "Ownership" = ownership,
                               "Maximum Day Use" = as.numeric(maximum_day_use),
@@ -103,19 +103,31 @@ Durfam_water_df <- data.frame("System Name" = system_name,
                               "Year" = rep(2022, 12)
                               )
 
-Durfam_water_df <- Durfam_water_df %>%
+Durham_water_df <- Durham_water_df %>%
   mutate(Date = my(paste(Month, "-", Year))) %>%
-  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date")
+  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
 
 #5 
 
+my_theme <- theme_minimal() + theme(plot.background = element_rect('white'),
+legend.position = "top",
+plot.title = element_text(color = 'blue'), legend.box.background = element_rect(color = "black"))
+theme_set(my_theme)
+
+ggplot(Durham_water_df, aes(x = factor(Month, levels = month.abb),
+                            y = Maximum.Day.Use, group = 1)) +
+         geom_line() +
+         geom_smooth(method="loess",se=FALSE) +
+         labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)", 
+              title = paste("Maximum Daily Withdrawl of Water by Month in 2022 for",
+                            system_name))
 ```
 
 6. Note that the PWSID and the year appear in the web address for the page we scraped. Construct a function using your code above that can scrape data for any PWSID and year for which the NC DEQ has data. **Be sure to modify the code to reflect the year and site (pwsid) scraped**.
 
 ```{r construct.a.scraping.function}
 #6. 
-
+base_url <- 
 
 ```
 
