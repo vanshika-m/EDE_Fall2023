@@ -215,7 +215,7 @@ Durham_Asheville_df <- full_join(the_df1, the_df2)
 Durham_Asheville_graph <- ggplot(Durham_Asheville_df, 
                                 aes(x = factor(Month, levels = month.abb),
                             y = Maximum.Day.Use) ) +
-  geom_line() +
+  geom_point() +
   geom_smooth(method="loess") +
   labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)")
 
@@ -237,16 +237,13 @@ Asheville_dfs <- map2(Ash_pwsid, years, function.scrape)
 #combining the different dfs into one 
 Asheville_combined <- bind_rows(Asheville_dfs)
 
-Ash_year <- year(Asheville_combined$Date[1])
-
-ggplot(Asheville_combined,aes(x = factor(Month, levels = month.abb),
-                            y = Maximum.Day.Use), color = Ash_year ) +
+ggplot(Asheville_combined,
+       aes(x = Date, y = Maximum.Day.Use), color = Ash_year) +
   geom_line() + 
   geom_smooth(method = "loess", se = FALSE)
-
 
 ```
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
 > Answer:
->
+> Yes, from the plot we can say that maximum daily use of water fell before 2015 and have consistently risen since then and more recently. 
