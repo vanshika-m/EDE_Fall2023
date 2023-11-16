@@ -169,8 +169,7 @@ the_df <- data.frame("System Name" = system_name,
                               )
 
 the_df <- the_df %>%
-  mutate(Date = my(paste(Month, "-", Year))) %>%
-  select("System.Name", "PWSID", "Ownership", "Maximum.Day.Use", "Date", "Month")
+  mutate(Date = my(paste(Month, "-", Year)))
 }
 
 ```
@@ -213,11 +212,11 @@ Asheville_2015
 Durham_Asheville_df <- full_join(the_df1, the_df2)
 
 Durham_Asheville_graph <- ggplot(Durham_Asheville_df, 
-                                aes(x = factor(Month, levels = month.abb),
-                            y = Maximum.Day.Use) ) +
-  geom_point() +
-  geom_smooth(method="loess") +
-  labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)")
+                                aes(x = Date,
+                            y = Maximum.Day.Use, color = System.Name)) +
+  geom_line() +
+  labs(x = "Month", y = "Maximum Daily Withdrawl (MGD)", 
+       title = "Comparing maximum daily withdrawls for Durham and Asheville")
 
 Durham_Asheville_graph
 ```
